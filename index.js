@@ -49,7 +49,7 @@ module.exports.select = function(params, cb) {
         queryString  = ''
 
     if (db === undefined) {
-        console.log('Open database first')
+        callError(cb, 'select', 'Open database first')
         return
     }
 
@@ -58,8 +58,7 @@ module.exports.select = function(params, cb) {
     } else if (typeof params === 'object') {
         tableString = safeName(params.table || '');
         if (tableString === '') {
-            console.error('Table is not specified ', params)
-            if (cb) cb(undefined, [])
+            callError(cb, 'select', 'Table is not specified ')
             return
         }
         fieldsString = (Object.prototype.toString.call(params.fields) === '[object Array]' ? params.fields.join(', ') : params.fields) || '*'
@@ -70,8 +69,7 @@ module.exports.select = function(params, cb) {
         queryString = 'select ' + fieldsString + ' from ' + tableString + whereObj.string + orderString + limitString + offsetString
         queryParams = whereObj.params
     } else {
-        console.log('First argument in select must be either a string or an object')
-        if (cb) cb(undefined, [])
+        callError(cb, 'select', 'First argument in select must be either a string or an object')
         return
     }
 
