@@ -102,8 +102,8 @@ module.exports.insert = function(table, record, cb) {
     })
 }
 
-module.exports.update = function(table, where, record, cb) {
-    var recordObj = record || {},
+module.exports.update = function(table, changes, where, cb) {
+    var changesObj = changes || {},
         queryString = '',
         tableString = safeName(table),
         whereObj = makeWhereStringAndParams(where),
@@ -116,9 +116,9 @@ module.exports.update = function(table, where, record, cb) {
         return
     }
 
-    for (k in recordObj) {
+    for (k in changesObj) {
         fields.push(k + ' = ?')
-        queryParams.push(recordObj[k])
+        queryParams.push(changesObj[k])
     }
 
     if (fields.length === 0) {
