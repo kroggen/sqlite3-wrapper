@@ -47,12 +47,12 @@ module.exports.select = function(params, cb) {
         offsetString = '',
         orderString  = '',
         queryString  = ''
-    
+
     if (db === undefined) {
         console.log('Open database first')
         return
     }
-    
+
     if (typeof params === 'string') {
         queryString = params
     } else if (typeof params === 'object') {
@@ -74,7 +74,7 @@ module.exports.select = function(params, cb) {
         if (cb) cb(undefined, [])
         return
     }
-    
+
     if (logQueries) console.log(queryString, queryParams)
     db.all(queryString, queryParams, cb)
 }
@@ -87,7 +87,7 @@ module.exports.insert = function(table, record, cb) {
         queryParams = [],
         recordObj = record || {},
         k
-    
+
     tableString = safeName(table);
     for (k in recordObj)  {
         fields.push(k)
@@ -95,7 +95,7 @@ module.exports.insert = function(table, record, cb) {
         queryParams.push(record[k])
     }
     queryString = 'insert into ' + tableString + ' (' +  fields.join(', ') + ') values (' + fieldsValues.join(', ') + ')'
-    
+
     if (logQueries) console.log(queryString, queryParams)
     db.run(queryString, queryParams, function(error){
         if (cb) cb(error, this.lastID)
@@ -110,25 +110,25 @@ module.exports.update = function(table, where, record, cb) {
         fields = [],
         queryParams = [],
         k
-    
+
     if (tableString === undefined) {
         callError(cb, 'update', 'table is undefined')
         return
     }
-        
+
     for (k in recordObj) {
         fields.push(k + ' = ?')
         queryParams.push(recordObj[k])
     }
-    
+
     if (fields.length === 0) {
         callError(cb, 'update', 'no fields to update')
         return;
     }
-    
+
     queryParams = queryParams.concat(whereObj.params)
     queryString = 'update ' + tableString + ' set ' + fields.join(', ') + whereObj.string
-        
+
     if (logQueries) console.log(queryString, queryParams)
     db.run(queryString, queryParams, function(error) {
         if (cb) cb(error, this.changes)
@@ -144,7 +144,7 @@ module.exports.delete = function(table, where, cb) {
         callError(cb, 'delete', 'table is undefined')
         return
     }
-        
+
     queryString = 'delete from ' + tableString + whereObj.string
     if (logQueries) console.log(queryString, whereObj.params)
     db.run(queryString, whereObj.params, function(error) {
@@ -168,7 +168,7 @@ function makeWhereStringAndParams(where) {
         result = {string: '', params: []},
         fields = [],
         k
-    
+
     // Two cases of where object: 
     // 1) simple where object with keys for field names and values for field values
     // 2) .clause with a query string (e.g. "name like ? OR surname like ?"), .params with parameter values
