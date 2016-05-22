@@ -106,16 +106,13 @@ module.exports.update = function(table, changes, arg3, arg4) {
     var changesObj = changes || {},
         queryString = '',
         tableString = safeName(table),
-        where, whereObj, cb,
+        where = arg3, whereObj,
+        cb = arg4,
         fields = [],
         queryParams = [],
         k
 
-    switch (arguments.length){
-        case 4:  where = arg3;       cb = arg4;      break;
-        case 3:  where = undefined;  cb = arg3;      break;
-        default: where = undefined;  cb = undefined; break;
-    }
+    if (typeof arg3 === 'function') { cb = arg3; where = undefined; }
 
     if (tableString === undefined) {
         callError(cb, 'update', 'table is undefined')
