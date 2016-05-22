@@ -92,7 +92,7 @@ module.exports.insert = function(table, record, cb) {
     for (k in recordObj)  {
         fields.push(k)
         fieldsValues.push('?')
-        queryParams.push(record[k])
+        queryParams.push(convertValue(record[k]))
     }
     queryString = 'insert into ' + tableString + ' (' +  fields.join(', ') + ') values (' + fieldsValues.join(', ') + ')'
 
@@ -124,7 +124,7 @@ module.exports.update = function(table, changes, arg3, arg4) {
 
     for (k in changesObj) {
         fields.push(k + ' = ?')
-        queryParams.push(changesObj[k])
+        queryParams.push(convertValue(changesObj[k]))
     }
 
     if (fields.length === 0) {
@@ -167,6 +167,13 @@ function callError(cb,func,msg){
 
 function safeName(name) {
     return ((name || '').match(/[a-zA-Z0-9_]+/) || [])[0]
+}
+
+function convertValue(value) {
+  if (typeof value === 'object')
+    return JSON.stringify(value);
+  else
+    return value;
 }
 
 // Converts where clause object to where.string and where.params to use in query
