@@ -165,7 +165,7 @@ function safeName(name) {
 }
 
 function convertValue(value) {
-  if (typeof value === 'object')
+  if (typeof value === 'object' && value !== null)
     return JSON.stringify(value);
   else
     return value;
