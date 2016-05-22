@@ -112,8 +112,7 @@ module.exports.update = function(table, where, record, cb) {
         k
     
     if (tableString === undefined) {
-        logError('update', 'table is undefined')
-        if (cb) cb(undefined, 0)
+        callError(cb, 'update', 'table is undefined')
         return
     }
         
@@ -123,7 +122,7 @@ module.exports.update = function(table, where, record, cb) {
     }
     
     if (fields.length === 0) {
-        if (cb) cb(undefined, 0)
+        callError(cb, 'update', 'no fields to update')
         return;
     }
     
@@ -142,8 +141,7 @@ module.exports.delete = function(table, where, cb) {
         queryString = ''
 
     if (tableString === undefined) {
-        logError('delete', 'table is undefined')
-        if (cb) cb(undefined, 0)
+        callError(cb, 'delete', 'table is undefined')
         return
     }
         
@@ -154,10 +152,12 @@ module.exports.delete = function(table, where, cb) {
     })
 }
 
-function logError(func, text) {
-    console.error('[' + self_name + '.' + func + ']: ' + text)
+function callError(cb,func,msg){
+    var err = '[' + self_name + '.' + func + ']: ' + msg
+    console.error(err)
+    if (cb) cb(err, undefined)
 }
-    
+
 function safeName(name) {
     return ((name || '').match(/[a-zA-Z0-9_]+/) || [])[0]
 }
