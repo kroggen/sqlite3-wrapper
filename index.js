@@ -102,14 +102,20 @@ module.exports.insert = function(table, record, cb) {
     })
 }
 
-module.exports.update = function(table, changes, where, cb) {
+module.exports.update = function(table, changes, arg3, arg4) {
     var changesObj = changes || {},
         queryString = '',
         tableString = safeName(table),
-        whereObj = makeWhereStringAndParams(where),
+        where, whereObj, cb,
         fields = [],
         queryParams = [],
         k
+
+    switch (arguments.length){
+        case 4:  where = arg3;       cb = arg4;      break;
+        case 3:  where = undefined;  cb = arg3;      break;
+        default: where = undefined;  cb = undefined; break;
+    }
 
     if (tableString === undefined) {
         callError(cb, 'update', 'table is undefined')
@@ -126,6 +132,7 @@ module.exports.update = function(table, changes, where, cb) {
         return;
     }
 
+    whereObj = makeWhereStringAndParams(where)
     queryParams = queryParams.concat(whereObj.params)
     queryString = 'update ' + tableString + ' set ' + fields.join(', ') + whereObj.string
 
