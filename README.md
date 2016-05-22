@@ -35,6 +35,7 @@ db.select({table: 'users', where: {username: 'John'}}, function(err, users) {
             // id: id of the created row
         })
     }
+
 })
 
 ```
@@ -67,30 +68,29 @@ Examples above effectively become `where parentId = 8341 and isLeaf = 1`.
     
     It is also possible to pass a query string instead of a query object, `db.select('select distinct category from records', ...)`.
     
-- **callback** - (error, rows)
+- **callback** (optional): function(error, rows)
     - **error**: `sqlite3` error
     - **rows**: array of rows that match the query
 
-## update(table, where, changes, callback)
+## update(table, changes, where, callback)
 
 - **table**: table name
-- **where**: `where` object
 - **changes**: an object with fields to update and their values, e. g. `{username: "John", password: "12345"}`
-- **callback** - (error, changes)
+- **where** (optional): `where` object
+- **callback** (optional): function(error, changes)
     - **error**: `sqlite3` error
     - **changes**: number of rows changed
     
 ## insert(table, row, callback)
 - **table**: table name
 - **row**: an object to insert to the database, e. g. `{username: "John", password: "12345"}`
-- **callback** - (error, id)
+- **callback** (optional): function(error, id)
     - **error**: `sqlite3` error
     - **id**: id of the new row created, 0 if error
     
 ## delete(table, where, callback)
 - **table**: table name
 - **where**: `where` object
-- **callback** - (error, changes)
+- **callback** (optional): function(error, changes)
     - **error**: `sqlite3` error
     - **changes**: number of rows deleted
-
