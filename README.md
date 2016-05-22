@@ -7,6 +7,7 @@
 As you know, it is much easier to work with database using objects instead of string queries:
 no typos in queries, easy to get, update and write back data, 
 to say nothing about getting user data from front-end forms and saving it to the database.
+
 `sqlite3-wrapper` is built around `sqlite3` package and provides four functions to work with data: 
 `select`, `insert`, `update` and `delete`. 
 
@@ -45,16 +46,16 @@ Use `db.open(databaseName)` to open a database,
 `db.close()` to close it,
 `db.database` to access the wrapped `sqlite3` database object.
 
-To see queries that the `sqlite3-wrapper` produces, call `db.logQueries(true)`: queries and parameters will be logged to the console.
+To see the queries that `sqlite3-wrapper` produces, call `db.logQueries(true)`: queries and parameters will be logged to the console.
 
 ## where
 
 `where` clause is an object, too. It has two forms:
 
-1. Keys for table field names, values for field values (e. g., `{ parentId: 8341, isLeaf: 1 }`)
-2. Where clause (string) and params array (`{ clause: "where parentId = ? and isLeaf = ?", params: [8341, 1] }`)
+1. Keys for table field names, values for field values. e. g. `{ parentId: 8341, isLeaf: 1 }`
+2. Where clause (string) and params array: `{ clause: "where parentId = ? and isLeaf = ?", params: [8341, 1] }`
 
-Examples above effectively become `where parentId = 8341 and isLeaf = 1`.
+Examples above effectively become `where parentId = 8341 and isLeaf = 1`
 
 ## select(query, callback)
 
@@ -66,7 +67,7 @@ Examples above effectively become `where parentId = 8341 and isLeaf = 1`.
     - **order** (optional, string): order, e.g. "name desc"
     - **where** (optional): `where` object
     
-    It is also possible to pass a query string instead of a query object, `db.select('select distinct category from records', ...)`.
+    It is also possible to pass a query string instead of a query object: `db.select('select distinct category from records', ...)`
     
 - **callback** (optional): function(error, rows)
     - **error**: `sqlite3` error
