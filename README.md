@@ -24,7 +24,7 @@ db.select({table: 'users', where: {username: 'John'}}, function(err, users) {
     if ((users || []).length > 0) {
     
         // update users set password = "12345" where id = <user.id>
-        db.update('users', {id: users[0].id}, {password: '12345'}, function(error, changes) {
+        db.update('users', {password: '12345'}, {id: users[0].id}, function(error, changes) {
             // error: sqlite3 error, 
             // changes: number of rows updated (if any)
         })
