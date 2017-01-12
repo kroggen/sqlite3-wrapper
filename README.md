@@ -41,12 +41,9 @@ db.select({table: 'users', where: {username: 'John'}}, function(err, users) {
 
 ```
 
-The `db` object is the wrapper in question. 
-Use `db.open(databaseName)` to open a database,
-`db.close()` to close it,
-`db.database` to access the wrapped `sqlite3` database object.
+This wrapper extends the `db` object returned by `sqlite3`.
 
-To see the queries that `sqlite3-wrapper` produces, call `db.logQueries(true)`: queries and parameters will be logged to the console.
+To see the queries that `sqlite3-wrapper` produces, set `db.logQueries = true`: queries and parameters will be logged to the console.
 
 ## where
 

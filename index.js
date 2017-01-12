@@ -1,27 +1,14 @@
 var sqlite = require('sqlite3').verbose(),
-    db,
-    self_name = 'sqlite3-wrapper',
-    logQueries = false
+    self_name = 'sqlite3-wrapper'
 
 module.exports.open = function(databaseName) {
-    if (db) db.close()
-    db = new sqlite.Database(databaseName)
-    return this
-}
 
-module.exports.close = function() {
-    if (db) db.close()
-    return this
-}
+    var db = new sqlite.Database(databaseName)
+    if (db === undefined) {
+        return db
+    }
 
-module.exports.database = function() {
-    return db
-}
-
-module.exports.logQueries = function(b) {
-    logQueries = b
-    return this
-}
+    db.logQueries = false;
 
 // Select expects param to be either a string 
 // (e.g. "select * from table"), or an object with properties:
@@ -37,7 +24,7 @@ module.exports.logQueries = function(b) {
 //      2) an object with properties:
 //         .clause with a query string (e.g. "name like ? OR surname like ?"), 
 //         .params with parameter values
-module.exports.select = function(params, cb) {
+db.select = function(params, cb) {
 
     var tableString  = '',
         whereObj = {},
@@ -47,11 +34,6 @@ module.exports.select = function(params, cb) {
         offsetString = '',
         orderString  = '',
         queryString  = ''
-
-    if (db === undefined) {
-        callError(cb, 'select', 'Open database first')
-        return
-    }
 
     if (typeof params === 'string') {
         queryString = params
@@ -73,11 +55,11 @@ module.exports.select = function(params, cb) {
         return
     }
 
-    if (logQueries) console.log(queryString, queryParams)
+    if (db.logQueries) console.log(queryString, queryParams)
     db.all(queryString, queryParams, cb)
 }
 
-module.exports.insert = function(table, record, cb) {
+db.insert = function(table, record, cb) {
     var queryString = '',
         tableString = '',
         fields = [],
@@ -94,13 +76,13 @@ module.exports.insert = function(table, record, cb) {
     }
     queryString = 'insert into ' + tableString + ' (' +  fields.join(', ') + ') values (' + fieldsValues.join(', ') + ')'
 
-    if (logQueries) console.log(queryString, queryParams)
+    if (db.logQueries) console.log(queryString, queryParams)
     db.run(queryString, queryParams, function(error){
         if (cb) cb(error, this.lastID)
     })
 }
 
-module.exports.update = function(table, changes, arg3, arg4) {
+db.update = function(table, changes, arg3, arg4) {
     var changesObj = changes || {},
         queryString = '',
         tableString = safeName(table),
@@ -131,13 +113,13 @@ module.exports.update = function(table, changes, arg3, arg4) {
     queryParams = queryParams.concat(whereObj.params)
     queryString = 'update ' + tableString + ' set ' + fields.join(', ') + whereObj.string
 
-    if (logQueries) console.log(queryString, queryParams)
+    if (db.logQueries) console.log(queryString, queryParams)
     db.run(queryString, queryParams, function(error) {
         if (cb) cb(error, this.changes)
     });
 }
 
-module.exports.delete = function(table, where, cb) {
+db.delete = function(table, where, cb) {
     var tableString = safeName(table),
         whereObj = makeWhereStringAndParams(where),
         queryString = ''
@@ -148,11 +130,16 @@ module.exports.delete = function(table, where, cb) {
     }
 
     queryString = 'delete from ' + tableString + whereObj.string
-    if (logQueries) console.log(queryString, whereObj.params)
+    if (db.logQueries) console.log(queryString, whereObj.params)
     db.run(queryString, whereObj.params, function(error) {
         if (cb) cb(error, this.changes)
     })
 }
+
+
+return db
+}
+
 
 function callError(cb,func,msg){
     var err = '[' + self_name + '.' + func + ']: ' + msg
