@@ -54,6 +54,10 @@ To see the queries that `sqlite3-wrapper` produces, set `db.logQueries = true`: 
 
 Examples above effectively become `where parentId = 8341 and isLeaf = 1`
 
+When the value is an array, like this: `{ tags: ['coding','database'], idGroup: [13,15,17] }`
+
+It will generate a IN clause: `WHERE tags IN ("coding","database") AND idGroup IN (13,15,17)`
+
 ## select(query, callback)
 
 - **query**: an object, possible properties:

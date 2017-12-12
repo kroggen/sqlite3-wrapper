@@ -174,8 +174,17 @@ function makeWhereStringAndParams(where) {
         result.params = whereObj.params || []
     } else {
         for (k in whereObj) {
-            fields.push(k + ' = ?')
-            result.params.push(whereObj[k])
+            if (whereObj[k] instanceof Array) {
+                var first = whereObj[k][0]
+                if (typeof first === 'string' || first instanceof String) {
+                    fields.push(k + ' IN ("' + whereObj[k].join('","') + '")')
+                } else {
+                    fields.push(k + ' IN (' + whereObj[k].join(',') + ')')
+                }
+            } else {
+                fields.push(k + ' = ?')
+                result.params.push(whereObj[k])
+            }
         }
         if (fields.length > 0) {
             result.string = ' where ' + fields.join(' and ')
