@@ -152,10 +152,10 @@ function safeName(name) {
 }
 
 function convertValue(value) {
-  if (typeof value === 'object' && value !== null)
+  if (typeof value === 'object' && value !== null) {
     if (angular) return angular.toJson(value);
     return JSON.stringify(value);
-  else
+  } else
     return value;
 }
 
